@@ -3,7 +3,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
 from src.chat_bot import ChatBot
 from src.document_handler import DocumentHandler
-from src.vector_database import VectorDatabase
+from src.vector_store import VectorStore
 
 OPENAI_API_KEY = ""
 embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
@@ -13,9 +13,9 @@ app = Flask(__name__)
 document_handler = DocumentHandler()
 document_handler.load("./documents")
 chunked_documents = document_handler.get_chunked_documents()
-vector_database = VectorDatabase()
-vectors = vector_database.build(chunked_documents, embeddings)
-chat_bot = ChatBot(llm, vectors)
+vector_database = VectorStore()
+vector_db = vector_database.build(chunked_documents, embeddings)
+chat_bot = ChatBot(llm, vector_db)
 
 @app.route("/query", methods=["POST"])
 def query():
